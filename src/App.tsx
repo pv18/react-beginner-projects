@@ -11,9 +11,9 @@ function App() {
       <div className="App">
         <div>
           <h2>Счетчик:</h2>
-          <h1>0</h1>
-          <button className="minus">- Минус</button>
-          <button className="plus">Плюс +</button>
+          <h1>{counter}</h1>
+          <button className="minus" onClick={clickPlus}>- Минус</button>
+          <button className="plus" onClick={clickMinus}>Плюс +</button>
         </div>
       </div>
   );
