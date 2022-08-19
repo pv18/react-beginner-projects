@@ -24,24 +24,25 @@ const questions = [
 ];
 
 function App() {
-    const [counter, setCounter] = useState<number>(0)
-    const [result, setResult] = useState<number>(0)
+    const [step, setStep] = useState<number>(0)
+    const [correct, setCorrect] = useState<number>(0)
+    const question = questions[step]
+
+    const onClickVariant = (index: number) => {
+        setStep(step + 1)
+        if (index === question.correct) setCorrect(correct + 1)
+    }
 
     return (
         <div className="App">
-            {questions.length !== counter &&
-                <Game question={questions[counter]}
-                      counter={counter}
-                      setCounter={setCounter}
-                      result={result}
-                      setResult={setResult}
-                />}
-            {questions.length === counter &&
-                <Result result={result}
-                        countQuestion={questions.length}
-                        setCounter={setCounter}
-                        setResult={setResult}
-                />}
+            {
+                step !== questions.length
+                    ? <Game question={question}
+                            step={step}
+                            onClickVariant={onClickVariant}
+                    />
+                    : <Result correct={correct}/>
+            }
         </div>
     );
 }
@@ -55,31 +56,23 @@ type QuestionType = {
 
 type GameType = {
     question: QuestionType
-    counter: number
-    result: number
-    setCounter: (counter: number) => void
-    setResult: (value: number) => void
+    step: number
+    onClickVariant: (value: number) => void
 }
 
-function Game({question, counter, setCounter, result, setResult}: GameType) {
-
-    const clickHandler = (index: number) => {
-        setCounter(counter + 1)
-        if (index === question.correct) setResult(result + 1)
-    }
+function Game({question, step, onClickVariant}: GameType) {
+    const percentage = Math.round(step / questions.length * 100)
 
     return (
         <>
             <div className="progress">
-                <div style={{width: '50%'}} className="progress__inner"></div>
+                <div style={{width: `${percentage}%`}} className="progress__inner"></div>
             </div>
             <h1>{question.title}</h1>
             <ul>
-                {question.variants.map((str, i) =>
-                    <li key={crypto.randomUUID()}
-                        onClick={() => clickHandler(i)}
-                    >
-                        {str}
+                {question.variants.map((text, i) =>
+                    <li key={crypto.randomUUID()} onClick={() => onClickVariant(i)}>
+                        {text}
                     </li>)}
             </ul>
         </>
@@ -87,25 +80,19 @@ function Game({question, counter, setCounter, result, setResult}: GameType) {
 }
 
 type ResultType = {
-    countQuestion: number
-    result: number
-    setCounter: (counter: number) => void
-    setResult: (value: number) => void
+    correct: number
 }
 
-function Result({result, countQuestion, setCounter, setResult}: ResultType) {
+function Result({correct}: ResultType) {
     const plural = require('plural-ru');
-
-    const clickHandler = () => {
-        setCounter(0)
-        setResult(0)
-    }
 
     return (
         <div className="result">
             <img src="https://cdn-icons-png.flaticon.com/512/2278/2278992.png"/>
-            <h2>Вы отгадали {plural(result, '%d ответ', '%d ответа', '%d ответов')} из {countQuestion}</h2>
-            <button onClick={clickHandler}>Попробовать снова</button>
+            <h2>Вы отгадали {plural(correct, '%d ответ', '%d ответа', '%d ответов')} из {questions.length}</h2>
+            <a href="/">
+                <button>Попробовать снова</button>
+            </a>
         </div>
     );
 }
