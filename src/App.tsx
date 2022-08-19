@@ -1,4 +1,5 @@
 import './index.scss';
+import {useState} from 'react';
 
 const questions = [
     {
@@ -22,37 +23,89 @@ const questions = [
     },
 ];
 
-function Result() {
+function App() {
+    const [counter, setCounter] = useState<number>(0)
+    const [result, setResult] = useState<number>(0)
+
     return (
-        <div className="result">
-            <img src="https://cdn-icons-png.flaticon.com/512/2278/2278992.png" />
-            <h2>Вы отгадали 3 ответа из 10</h2>
-            <button>Попробовать снова</button>
+        <div className="App">
+            {questions.length !== counter &&
+                <Game question={questions[counter]}
+                      counter={counter}
+                      setCounter={setCounter}
+                      result={result}
+                      setResult={setResult}
+                />}
+            {questions.length === counter &&
+                <Result result={result}
+                        countQuestion={questions.length}
+                        setCounter={setCounter}
+                        setResult={setResult}
+                />}
         </div>
     );
 }
 
-function Game() {
+
+type QuestionType = {
+    title: string
+    variants: string[]
+    correct: number
+}
+
+type GameType = {
+    question: QuestionType
+    counter: number
+    result: number
+    setCounter: (counter: number) => void
+    setResult: (value: number) => void
+}
+
+function Game({question, counter, setCounter, result, setResult}: GameType) {
+
+    const clickHandler = (index: number) => {
+        setCounter(counter + 1)
+        if (index === question.correct) setResult(result + 1)
+    }
+
     return (
         <>
             <div className="progress">
-                <div style={{ width: '50%' }} className="progress__inner"></div>
+                <div style={{width: '50%'}} className="progress__inner"></div>
             </div>
-            <h1>Что такое useState?</h1>
+            <h1>{question.title}</h1>
             <ul>
-                <li>Это функция для хранения данных компонента</li>
-                <li>Это глобальный стейт</li>
-                <li>Это когда на ты никому не нужен</li>
+                {question.variants.map((str, i) =>
+                    <li key={crypto.randomUUID()}
+                        onClick={() => clickHandler(i)}
+                    >
+                        {str}
+                    </li>)}
             </ul>
         </>
     );
 }
 
-function App() {
+type ResultType = {
+    countQuestion: number
+    result: number
+    setCounter: (counter: number) => void
+    setResult: (value: number) => void
+}
+
+function Result({result, countQuestion, setCounter, setResult}: ResultType) {
+    const plural = require('plural-ru');
+
+    const clickHandler = () => {
+        setCounter(0)
+        setResult(0)
+    }
+
     return (
-        <div className="App">
-            <Game />
-            {/* <Result /> */}
+        <div className="result">
+            <img src="https://cdn-icons-png.flaticon.com/512/2278/2278992.png"/>
+            <h2>Вы отгадали {plural(result, '%d ответ', '%d ответа', '%d ответов')} из {countQuestion}</h2>
+            <button onClick={clickHandler}>Попробовать снова</button>
         </div>
     );
 }
