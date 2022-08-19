@@ -1,13 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Skeleton} from './Skeleton';
 import {User} from './User';
+import {UsersType} from '../../App';
 
-type UsersType = {
-    items?: any
-    isLoading?: boolean
+type UsersPropsType = {
+    items: UsersType[]
+    isLoading: boolean
 }
 
-export const Users = ({items, isLoading}: UsersType) => {
+export const Users = ({items, isLoading}: UsersPropsType) => {
     return (
         <>
             <div className="search">
@@ -25,7 +26,7 @@ export const Users = ({items, isLoading}: UsersType) => {
                 </div>
             ) : (
                 <ul className="users-list">
-                    <User/>
+                    {items.map(user => <User key={crypto.randomUUID()} {...user}/>)}
                 </ul>
             )}
             <button className="send-invite-btn">Отправить приглашение</button>
