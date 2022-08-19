@@ -1,11 +1,17 @@
 import React from 'react';
+import './index.scss';
+import { Success } from './components/Success';
+import { Users } from './components/Users';
 
-const App = () => {
+// Тут список пользователей: https://reqres.in/api/users
+
+function App() {
     return (
-        <div>
-          
+        <div className="App">
+            <Users />
+            {/* <Success /> */}
         </div>
     );
-};
+}
 
 export default App;
