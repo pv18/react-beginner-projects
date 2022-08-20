@@ -1,25 +1,22 @@
-import React, {ChangeEvent, useState} from 'react';
+import React from 'react';
+import {DefaultCurrencies} from './types';
 
-export const defaultCurrencies = ['RUB', 'USD', 'EUR', 'GBP'];
+export const defaultCurrencies: DefaultCurrencies[] = ['RUB', 'USD', 'EUR', 'GBP'];
 
 type BlockType = {
-    value?: number
-    currency?: string
-    onChangeValue?: (e: ChangeEvent<HTMLInputElement>) => void
-    onChangeCurrency?: (cur: string) => void
+    value: number
+    currency: DefaultCurrencies
+    onChangeValue: (value: number) => void
+    onChangeCurrency: (cur: DefaultCurrencies) => void
 }
 
 export const Block = ({value, currency, onChangeValue, onChangeCurrency}: BlockType) => {
-    const [count, setCount] = useState<number>(0)
-
     return (
         <div className="block">
             <ul className="currencies">
                 {defaultCurrencies.map((cur) => (
                     <li
-                        // onClick={() => onChangeCurrency(cur)}
-                        onClick={() => {
-                        }}
+                        onClick={() => onChangeCurrency(cur)}
                         className={currency === cur ? 'active' : ''}
                         key={cur}>
                         {cur}
@@ -33,12 +30,10 @@ export const Block = ({value, currency, onChangeValue, onChangeCurrency}: BlockT
                 </li>
             </ul>
             <input
-                // onChange={(e) => onChangeValue(e.target.value)}
-                onChange={(e) => {
-                }}
+                onChange={(e) => onChangeValue(+(e.target.value))}
                 value={value}
                 type="number"
-                placeholder={`${count}`}
+                placeholder={'0'}
             />
         </div>
     )
